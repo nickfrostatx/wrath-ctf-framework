@@ -57,8 +57,11 @@ def check_prereqs(team, challenge):
 
 
 def get_challenges(team):
-    all_challs = Challenge.query.order_by(Challenge.points).all()
-    return list(filter(lambda c: check_prereqs(team, c), all_challs))
+    """Returns a list of tuples containing the challenge and solve count."""
+    q = (db.session.query(Challenge,
+                          db.func.count(Solve.team_id).label('solves'))
+         .outerjoin(Solve).group_by(Challenge.id).order_by(Challenge.points))
+    return [(c, s) for c, s in q.all() if check_prereqs(team, c)]
 
 
 def get_challenge(team, id):

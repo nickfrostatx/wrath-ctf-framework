@@ -67,7 +67,7 @@ def challenge_page(team):
                   .format(solved.points), 'success')
     challenges = core.get_challenges(team)
     resource_urls = {}
-    for c in challenges:
+    for c, _ in challenges:
         for r in c.resources:
             resource_urls[r.name] = url_for('.get_resource',
                                             category=c.category, name=r.name)
